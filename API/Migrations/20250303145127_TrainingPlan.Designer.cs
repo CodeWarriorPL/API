@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250303145127_TrainingPlan")]
+    partial class TrainingPlan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,10 +91,6 @@ namespace API.Migrations
                     b.Property<DateTime>("TrainingDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TrainingPlanId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -102,33 +100,9 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TrainingPlanId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Trainings");
-                });
-
-            modelBuilder.Entity("API.Models.TrainingPlan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TrainingPlans");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -188,7 +162,7 @@ namespace API.Migrations
                     b.HasOne("API.Models.Exercise", "Exercise")
                         .WithMany()
                         .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Models.Training", "Training")
@@ -204,27 +178,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Training", b =>
                 {
-                    b.HasOne("API.Models.TrainingPlan", "TrainingPlan")
-                        .WithMany("Trainings")
-                        .HasForeignKey("TrainingPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("API.Models.User", "User")
                         .WithMany("Trainings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("TrainingPlan");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("API.Models.TrainingPlan", b =>
-                {
-                    b.HasOne("API.Models.User", "User")
-                        .WithMany("TrainingPlans")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -237,7 +192,7 @@ namespace API.Migrations
                     b.HasOne("API.Models.User", "User")
                         .WithMany("UserMeasurements")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -248,15 +203,8 @@ namespace API.Migrations
                     b.Navigation("Sets");
                 });
 
-            modelBuilder.Entity("API.Models.TrainingPlan", b =>
-                {
-                    b.Navigation("Trainings");
-                });
-
             modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.Navigation("TrainingPlans");
-
                     b.Navigation("Trainings");
 
                     b.Navigation("UserMeasurements");

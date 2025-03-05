@@ -79,7 +79,7 @@ namespace API.Repositories
 
             return false; 
         }
-
+ 
         public void DeleteTraining(int id)
         {
             var trainingToDelete = _context.Trainings.Find(id);

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
@@ -11,6 +12,12 @@ namespace API.Models
 
         public string name { get; set; } 
         public int UserId { get; set; }
+        
+        public Boolean IsTraingingPlan { get; set; }
+
+        public int? TrainingPlanId { get; set; }
+        [ForeignKey("TrainingPlanId")]
+        public TrainingPlan? TrainingPlan { get; set; }  
 
         public User User { get; set; } = null!;
 

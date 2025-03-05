@@ -7,6 +7,10 @@
         public DateTime TrainingDate { get; set; }
 
         public string name { get; set; }
-       
+
+        public int? TrainingPlanId { get; set; }
+
+
+
     }
 }

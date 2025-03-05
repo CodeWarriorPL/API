@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace API.Models
 {
@@ -10,6 +11,7 @@ namespace API.Models
         public int Repetitions { get; set; }
         public float Weight { get; set; }
 
+        [JsonIgnore]
         public Training Training { get; set; }
         public Exercise Exercise { get; set; }
 

@@ -4,6 +4,8 @@ using API.Interfaces;
 using API.Repositories;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using API.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,6 +18,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<ISetRepository, SetRepository>();
+builder.Services.AddScoped<IUserMeasurementRepository,UserMeasurementRepository>();
+builder.Services.AddScoped<ITrainingPlanRepository, TrainingPlanRepository>();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -49,5 +53,12 @@ app.UseCors("AllowSpecificOrigin");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+    var importer = new ExerciseImporter(context);
+    importer.ImportExercises("Assets/weightlifting_with_body_weight.csv"); // Podaj poprawn¹ œcie¿kê do pliku
+}
+
 
 app.Run();

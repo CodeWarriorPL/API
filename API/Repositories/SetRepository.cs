@@ -40,6 +40,11 @@ namespace API.Repositories
             return _context.Sets.Include(s => s.Training).Where(s => s.Training.UserId == userId && s.ExerciseId == exerciseId).ToList();
         }   
 
+        public ICollection<Set> GetSetsByExerciseId(int exerciseId, int trainingId)
+        {
+            return _context.Sets.Where(s => s.ExerciseId == exerciseId && s.TrainingId == trainingId).ToList();
+        }
+
         public bool Save()
         {
             var saved = _context.SaveChanges();
@@ -62,7 +67,7 @@ namespace API.Repositories
                 result.ExerciseId = updatedSet.ExerciseId;
                 result.Training = updatedSet.Training;
                 result.TrainingId = updatedSet.TrainingId;
-
+                    
             }
             _context.Sets.Update(result);
 

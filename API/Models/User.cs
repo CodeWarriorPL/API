@@ -12,6 +12,10 @@ namespace API.Models
     public string Password { get; set; }
 
     public ICollection<Training> Trainings { get;} = new List<Training>();
+
+    public ICollection<UserMeasurement> UserMeasurements { get;} = new List<UserMeasurement>();
+
+    public ICollection<TrainingPlan> TrainingPlans { get;} = new List<TrainingPlan>();
     
     }
 }

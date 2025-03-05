@@ -7,6 +7,8 @@ namespace API.Interfaces
         ICollection<Set> GetSets(int trainingId);
 
         ICollection<Set> GetUserSetsByExerciseId(int userId, int exerciseId);
+
+        ICollection<Set> GetSetsByExerciseId(int exerciseId, int trainingId);
         Set GetSetById(int setId);
 
         bool CreateSet(Set newSet);

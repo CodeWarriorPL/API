@@ -32,9 +32,24 @@ namespace API.Controllers
             return Ok(sets);
 
         }
+
+        [HttpGet("byTrainingExercise/{exerciseId}/{trainingId}")]
+        [ProducesResponseType(200, Type = typeof(ICollection<Set>))]
+        public IActionResult GetSetsByExerciseId(int exerciseId, int trainingId)
+        {
+            var sets = _mapper.Map<ICollection<SetDto>>(_setRepository.GetSetsByExerciseId(exerciseId, trainingId));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(sets);
+
+        }
+
         [HttpGet("byId/{setId}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
+
         public IActionResult GetSet(int setId)
         {
             var set = _mapper.Map<SetDto>(_setRepository.GetSetById(setId));
