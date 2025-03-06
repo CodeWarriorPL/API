@@ -3,7 +3,9 @@ using API.Interfaces;
 using API.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using API.Data;
 
 namespace API.Controllers
 {
@@ -13,11 +15,13 @@ namespace API.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly DataContext _context;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IMapper mapper, DataContext _context)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            this._context = _context;
 
 
         }
@@ -103,6 +107,28 @@ namespace API.Controllers
 
             return NoContent(); // 204 No Content
         }
+        [HttpGet("one-rep-max-history")]
+        [ProducesResponseType(200, Type = typeof(List<object>))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetOneRepMaxHistory([FromQuery] int userId, [FromQuery] string exerciseName)
+        {
+            var oneRepMaxResults = await _context.Trainings
+                .Where(t => t.UserId == userId && t.TrainingPlanId == null)  // Filtrujemy tylko te treningi, które nie mają przypisanego TrainingPlanId
+                .SelectMany(t => t.Sets
+                    .Where(s => s.Exercise.ExerciseName == exerciseName)
+                    .GroupBy(s => s.TrainingId)
+                    .Select(g => new
+                    {
+                        Date = g.First().Training.TrainingDate,
+                        OneRepMax = g.Max(s => s.Weight * (1 + s.Repetitions / 30.0f)) // Epley formula
+                    })
+                )
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+
+            return Ok(oneRepMaxResults);
+        }
+
 
 
         // Training methods
@@ -113,4 +139,4 @@ namespace API.Controllers
 
 
     }
-    }
+}
